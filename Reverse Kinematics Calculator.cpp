@@ -17,8 +17,12 @@ struct Vec2 {
     Vec2(float X, float Y)
         : x(X), y(Y) { }
 
-    float Mag() {
+    float MagSq() {
         return x * x + y * y;
+    }
+
+    float Mag() {
+        return std::sqrt(MagSq());
     }
 
     Vec2 Norm() {
