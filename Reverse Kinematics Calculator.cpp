@@ -219,7 +219,7 @@ int main() {
                 Vec2 diff = nextPos - currentPos;
                 float diffMag = diff.Mag();
 
-                float len = lens[j];
+                float len = lens[j + 1];
                 float scalar = len / diffMag;
                 diff *= scalar;
 
