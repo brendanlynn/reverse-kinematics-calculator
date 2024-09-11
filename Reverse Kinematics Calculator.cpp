@@ -191,7 +191,7 @@ int main() {
 
     float precision;
     std::cout << '\n'
-        << "Below what rate of change would you like to terminate prematurely (put 0 if inapplicable)? ";
+        << "At what precision would you like to terminate prematurely (put 0 if inapplicable)? ";
     std::cin >> precision;
     if (precision < 0.f) precision = 0.f;
 
@@ -210,8 +210,8 @@ int main() {
         std::cout << angle << " rad\n";
     }
 
+    float error;
     for (uint64_t i = 0; i < iterationCount; ++i) {
-        float maxChange = 0.f;
         if (i & 1) {
             Vec2 currentPos = pos;
             for (uint64_t j = pointCount - 1; j != ~0; --j) {
@@ -220,15 +220,13 @@ int main() {
                 float diffMag = diff.Mag();
 
                 float len = lens[j];
-                float absDiffLenMag = std::abs(diffMag - len);
-                if (maxChange < absDiffLenMag) maxChange = absDiffLenMag;
-
                 float scalar = len / diffMag;
                 diff *= scalar;
 
                 currentPos += diff;
                 positions[j] = currentPos;
             }
+            error = std::abs(positions[0].Mag() - lens[0]);
         }
         else {
             Vec2 currentPos;
@@ -238,18 +236,19 @@ int main() {
                 float diffMag = diff.Mag();
 
                 float len = lens[j];
-                float absDiffLenMag = std::abs(diffMag - len);
-                if (maxChange < absDiffLenMag) maxChange = absDiffLenMag;
-
                 float scalar = len / diffMag;
                 diff *= scalar;
 
                 currentPos += diff;
                 positions[j] = currentPos;
             }
+            error = std::abs((positions[pointCount - 1] - pos).Mag() - lens[pointCount]);
         }
-        if (maxChange < precision) break;
+        if (error < precision) break;
     }
+
+    std::cout << '\n'
+        << "Terminated with an error of: " << error << '\n';
 
     std::cout << '\n'
         << "The ending positions are:\n";
