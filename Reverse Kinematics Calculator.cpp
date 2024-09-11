@@ -142,8 +142,16 @@ int main() {
     std::cin >> posX;
     std::cout << "  Y: ";
     std::cin >> posY;
-
     Vec2 pos(posX, posY);
+
+    float lenSum = 0.f;
+    for (uint64_t i = 0; i < lenCount; ++i)
+        lenSum += lens[i];
+    if (lenSum * lenSum < pos.MagSq()) {
+        std::cout << '\n'
+            << "That is impossible.\n";
+        return 1;
+    }
 
     auto* positions = new Vec2[lenCount];
     std::ranlux48 rl48(getMills());
